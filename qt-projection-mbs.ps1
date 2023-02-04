@@ -28,7 +28,8 @@
 
 # $rate = 0.9 # Currently unknown. Going with middle value.
 
-$rate = 0.83
+# $rate = 0.83
+$rate = 0.94
 
 $month = '2023-02-'
 
@@ -82,23 +83,21 @@ function get-change ($text, $a, $b)
     $sum_b - $sum_a
 }
 # ----------------------------------------------------------------------
+# Nov dates for Dec report
+
 # $gnma_i_change  = $rate * (get-change 'GNMA I '  '2022-11-09' '2022-11-16')
 # $gld_change     = $rate * (get-change 'FHLMCGLD' '2022-11-09' '2022-11-16')
 # $gnma_ii_change = $rate * (get-change 'GNMA II'  '2022-11-16' '2022-11-23')
 # $umbs_change    = $rate * (get-change 'UMBS'     '2022-11-23' '2022-11-30')
+# ----------------------------------------------------------------------
+# Dec dates for Jan report
 
 # $gnma_i_change  = $rate * (get-change 'GNMA I '  '2022-12-14' '2022-12-21')
 # $gld_change     = $rate * (get-change 'FHLMCGLD' '2022-12-14' '2022-12-21')
 # $gnma_ii_change = $rate * (get-change 'GNMA II'  '2022-12-14' '2022-12-21')
 # $umbs_change    = $rate * (get-change 'UMBS'     '2022-12-21' '2022-12-28')
-
-
-#     '2023-01-04'
-#     '2023-01-11'
-#     '2023-01-18'
-#     '2023-01-25'
-#     '2023-02-01'
-
+# ----------------------------------------------------------------------
+# Jan dates for Feb report
 
 # staggered
 
@@ -114,12 +113,7 @@ function get-change ($text, $a, $b)
 # $gnma_ii_change = $rate * (get-change 'GNMA II'  '2023-01-04' '2023-02-01')
 # $umbs_change    = $rate * (get-change 'UMBS'     '2023-01-04' '2023-02-01')
 
-
-
-# $gnma_i_change_  = (get-change 'GNMA I '  '2023-01-11' '2023-01-18')
-# $gld_change_     = (get-change 'FHLMCGLD' '2023-01-11' '2023-01-18')
-# $gnma_ii_change_ = (get-change 'GNMA II'  '2023-01-18' '2023-01-25')
-# $umbs_change_    = (get-change 'UMBS'     '2023-01-18' '2023-01-25')
+# new technique
 
 $gnma_i_change_  = (get-change 'GNMA I '  '2023-01-04' '2023-02-01')
 $gld_change_     = (get-change 'FHLMCGLD' '2023-01-04' '2023-02-01')
@@ -128,28 +122,15 @@ $umbs_change_    = (get-change 'UMBS'     '2023-01-04' '2023-02-01')
 
 $total = $umbs_change_ + $gnma_i_change_ + $gld_change_ + $gnma_ii_change_
 
-# $gnma_i_change  = -1 * (5000000000 * $gnma_i_change_  / $total - $rate * $gnma_i_change_)
-# $gld_change     = -1 * (5000000000 * $gld_change_     / $total - $rate * $gld_change_)
-# $gnma_ii_change = -1 * (5000000000 * $gnma_ii_change_ / $total - $rate * $gnma_ii_change_)
-# $umbs_change    = -1 * (5000000000 * $umbs_change_    / $total - $rate * $umbs_change_)
-
 $gnma_i_change  = 5000000000 * $gnma_i_change_  / $total * -1   +   $rate * $gnma_i_change_
 $gld_change     = 5000000000 * $gld_change_     / $total * -1   +   $rate * $gld_change_
 $gnma_ii_change = 5000000000 * $gnma_ii_change_ / $total * -1   +   $rate * $gnma_ii_change_
 $umbs_change    = 5000000000 * $umbs_change_    / $total * -1   +   $rate * $umbs_change_
 
-# $gnma_i_change  / $total
-# $gld_change     / $total
-# $gnma_ii_change / $total
-# $umbs_change    / $total
+# ----------------------------------------------------------------------
 
-
-# $gnma_i_change  / $total +
-# $gld_change     / $total +
-# $gnma_ii_change / $total +
-# $umbs_change    / $total
-
-
+Write-Host ('rate: {0}' -f $rate) -ForegroundColor Yellow
+Write-Host
 
 'UMBS          : {0,20}' -f ($umbs_change                                                 ).ToString('N') 
 'GNMA I + GOLD : {0,20}' -f ($gnma_i_change + $gld_change                                 ).ToString('N') 

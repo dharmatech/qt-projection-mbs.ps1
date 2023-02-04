@@ -12,16 +12,32 @@
 #     '2023-01-04'
 # )
 
-$rate = 3.32 / 3.52 # Dec / Nov
+# $rate = 3.32 / 3.52 # Dec / Nov    0.94
 
-$month = '2023-01-'
+# $month = '2023-01-'
+
+# $dates = @(
+#     '2023-01-04'
+#     '2023-01-11'
+#     '2023-01-18'
+#     '2023-01-25'
+#     '2023-02-01'
+# )
+
+# $rate = 3.32 / 3.52
+
+# $rate = 0.9 # Currently unknown. Going with middle value.
+
+$rate = 0.83
+
+$month = '2023-02-'
 
 $dates = @(
-    '2023-01-04'
-    '2023-01-11'
-    '2023-01-18'
-    '2023-01-25'
     '2023-02-01'
+    '2023-02-08'
+    '2023-02-15'
+    '2023-02-22'
+    '2023-03-01'
 )
 
 # ----------------------------------------------------------------------
@@ -50,6 +66,10 @@ function soma-mbs-get-asof ($date)
 function get-sum ($text, $date)
 {
     $result = soma-mbs-get-asof $date
+
+    # $result | ft * | Out-String | Write-Host
+
+    # $result.soma.holdings | Where-Object securityDescription -match $text | ft * | Out-String | Write-Host
         
     ($result.soma.holdings | Where-Object securityDescription -match $text | Measure-Object -Property currentFaceValue -Sum).Sum    
 }
@@ -67,10 +87,32 @@ function get-change ($text, $a, $b)
 # $gnma_ii_change = $rate * (get-change 'GNMA II'  '2022-11-16' '2022-11-23')
 # $umbs_change    = $rate * (get-change 'UMBS'     '2022-11-23' '2022-11-30')
 
-$gnma_i_change  = $rate * (get-change 'GNMA I '  '2022-12-14' '2022-12-21')
-$gld_change     = $rate * (get-change 'FHLMCGLD' '2022-12-14' '2022-12-21')
-$gnma_ii_change = $rate * (get-change 'GNMA II'  '2022-12-14' '2022-12-21')
-$umbs_change    = $rate * (get-change 'UMBS'     '2022-12-21' '2022-12-28')
+# $gnma_i_change  = $rate * (get-change 'GNMA I '  '2022-12-14' '2022-12-21')
+# $gld_change     = $rate * (get-change 'FHLMCGLD' '2022-12-14' '2022-12-21')
+# $gnma_ii_change = $rate * (get-change 'GNMA II'  '2022-12-14' '2022-12-21')
+# $umbs_change    = $rate * (get-change 'UMBS'     '2022-12-21' '2022-12-28')
+
+
+#     '2023-01-04'
+#     '2023-01-11'
+#     '2023-01-18'
+#     '2023-01-25'
+#     '2023-02-01'
+
+
+# staggered
+
+$gnma_i_change  = $rate * (get-change 'GNMA I '  '2023-01-11' '2023-01-18')
+$gld_change     = $rate * (get-change 'FHLMCGLD' '2023-01-11' '2023-01-18')
+$gnma_ii_change = $rate * (get-change 'GNMA II'  '2023-01-18' '2023-01-25')
+$umbs_change    = $rate * (get-change 'UMBS'     '2023-01-18' '2023-01-25')
+
+# uniform
+
+# $gnma_i_change  = $rate * (get-change 'GNMA I '  '2023-01-04' '2023-02-01')
+# $gld_change     = $rate * (get-change 'FHLMCGLD' '2023-01-04' '2023-02-01')
+# $gnma_ii_change = $rate * (get-change 'GNMA II'  '2023-01-04' '2023-02-01')
+# $umbs_change    = $rate * (get-change 'UMBS'     '2023-01-04' '2023-02-01')
 
 'UMBS          : {0,20}' -f ($umbs_change                                                 ).ToString('N') 
 'GNMA I + GOLD : {0,20}' -f ($gnma_i_change + $gld_change                                 ).ToString('N') 

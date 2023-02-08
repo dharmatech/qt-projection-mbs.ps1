@@ -24,12 +24,7 @@
 #     '2023-02-01'
 # )
 
-# $rate = 3.32 / 3.52
-
-# $rate = 0.9 # Currently unknown. Going with middle value.
-
-# $rate = 0.83
-$rate = 0.94
+$rate = 2.75 / 3.32 # Jan / Dec    8.82
 
 $month = '2023-02-'
 
@@ -71,6 +66,8 @@ function get-sum ($text, $date)
     # $result | ft * | Out-String | Write-Host
 
     # $result.soma.holdings | Where-Object securityDescription -match $text | ft * | Out-String | Write-Host
+
+    # $result.soma.holdings | Where-Object securityDescription -match $text | Format-Table * > ('{0}-{1}-records.txt' -f $date, $text)
         
     ($result.soma.holdings | Where-Object securityDescription -match $text | Measure-Object -Property currentFaceValue -Sum).Sum    
 }
@@ -99,22 +96,6 @@ function get-change ($text, $a, $b)
 # ----------------------------------------------------------------------
 # Jan dates for Feb report
 
-# staggered
-
-# $gnma_i_change  = $rate * (get-change 'GNMA I '  '2023-01-11' '2023-01-18')
-# $gld_change     = $rate * (get-change 'FHLMCGLD' '2023-01-11' '2023-01-18')
-# $gnma_ii_change = $rate * (get-change 'GNMA II'  '2023-01-18' '2023-01-25')
-# $umbs_change    = $rate * (get-change 'UMBS'     '2023-01-18' '2023-01-25')
-
-# uniform
-
-# $gnma_i_change  = $rate * (get-change 'GNMA I '  '2023-01-04' '2023-02-01')
-# $gld_change     = $rate * (get-change 'FHLMCGLD' '2023-01-04' '2023-02-01')
-# $gnma_ii_change = $rate * (get-change 'GNMA II'  '2023-01-04' '2023-02-01')
-# $umbs_change    = $rate * (get-change 'UMBS'     '2023-01-04' '2023-02-01')
-
-# new technique
-
 $gnma_i_change_  = (get-change 'GNMA I '  '2023-01-04' '2023-02-01')
 $gld_change_     = (get-change 'FHLMCGLD' '2023-01-04' '2023-02-01')
 $gnma_ii_change_ = (get-change 'GNMA II'  '2023-01-04' '2023-02-01')
@@ -122,20 +103,88 @@ $umbs_change_    = (get-change 'UMBS'     '2023-01-04' '2023-02-01')
 
 $total = $umbs_change_ + $gnma_i_change_ + $gld_change_ + $gnma_ii_change_
 
-$gnma_i_change  = 5000000000 * $gnma_i_change_  / $total * -1   +   $rate * $gnma_i_change_
-$gld_change     = 5000000000 * $gld_change_     / $total * -1   +   $rate * $gld_change_
-$gnma_ii_change = 5000000000 * $gnma_ii_change_ / $total * -1   +   $rate * $gnma_ii_change_
-$umbs_change    = 5000000000 * $umbs_change_    / $total * -1   +   $rate * $umbs_change_
+function calc-new ($val)
+{
+    $reg = 5000000000 * $val / $total * -1 # regular payment portion
+
+    $pre = $val - $reg                     # pre-payment portion
+
+    $reg + $rate * $pre
+}
+
+$gnma_i_change  = calc-new $gnma_i_change_
+$gld_change     = calc-new $gld_change_
+$gnma_ii_change = calc-new $gnma_ii_change_
+$umbs_change    = calc-new $umbs_change_
+
+function calc-reg ($val)
+{
+    5000000000 * $val / $total * -1
+}
+
+function calc-pre ($val)
+{
+    $reg = calc-reg $val
+
+    ($val - $reg) * $rate
+}
+
 
 # ----------------------------------------------------------------------
 
-Write-Host ('rate: {0}' -f $rate) -ForegroundColor Yellow
+Write-Host ('rate: {0:N}' -f $rate) -ForegroundColor Yellow
 Write-Host
 
-'UMBS          : {0,20}' -f ($umbs_change                                                 ).ToString('N') 
-'GNMA I + GOLD : {0,20}' -f ($gnma_i_change + $gld_change                                 ).ToString('N') 
-'GNMA II       : {0,20}' -f ($gnma_ii_change                                              ).ToString('N')               
-'TOTAL         : {0,20}' -f ($umbs_change + $gnma_i_change + $gld_change + $gnma_ii_change).ToString('N')
+# 'UMBS          : {0,20}' -f ($umbs_change                                                 ).ToString('N') 
+# 'GNMA I + GOLD : {0,20}' -f ($gnma_i_change + $gld_change                                 ).ToString('N') 
+# 'GNMA II       : {0,20}' -f ($gnma_ii_change                                              ).ToString('N')               
+# 'TOTAL         : {0,20}' -f ($umbs_change + $gnma_i_change + $gld_change + $gnma_ii_change).ToString('N')
+
+          # UMBS          :   -10,039,438,836.07    -7,980,265,720.03    -3,429,278,977.61
+# Write-Host '                               TOTAL           PREPAYMENT              REGULAR'
+# 'UMBS          : {0,20} {1,20:N} {2,20:N}' -f ($umbs_change                                                 ).ToString('N'), (calc-pre $umbs_change_),                    (calc-reg $umbs_change_)
+# 'GNMA I + GOLD : {0,20} {1,20:N} {2,20:N}' -f ($gnma_i_change + $gld_change                                 ).ToString('N'), (calc-pre ($gnma_i_change_ + $gld_change_)), (calc-reg ($gnma_i_change_ + $gld_change_))
+# 'GNMA II       : {0,20} {1,20:N} {2,20:N}' -f ($gnma_ii_change                                              ).ToString('N'), (calc-pre $gnma_ii_change_),                 (calc-reg $gnma_ii_change_)
+# 'TOTAL         : {0,20}' -f ($umbs_change + $gnma_i_change + $gld_change + $gnma_ii_change).ToString('N')
+
+
+
+#           UMBS    :   -10,039,438,836.07    -6,610,159,858.45    -3,429,278,977.61
+Write-Host '                         TOTAL           PREPAYMENT              REGULAR'
+'UMBS    : {0,20} {1,20:N} {2,20:N}' -f ($umbs_change   ).ToString('N'), (calc-pre $umbs_change_),    (calc-reg $umbs_change_)
+'GOLD    : {0,20} {1,20:N} {2,20:N}' -f ($gld_change    ).ToString('N'), (calc-pre $gld_change_),     (calc-reg $gld_change_)
+'GNMA I  : {0,20} {1,20:N} {2,20:N}' -f ($gnma_i_change ).ToString('N'), (calc-pre $gnma_i_change_),  (calc-reg $gnma_i_change_)
+'GNMA II : {0,20} {1,20:N} {2,20:N}' -f ($gnma_ii_change).ToString('N'), (calc-pre $gnma_ii_change_), (calc-reg $gnma_ii_change_)
+'TOTAL   : {0,20}' -f ($umbs_change + $gnma_i_change + $gld_change + $gnma_ii_change).ToString('N')
+
+
+
+#           UMBS    :   -10,039,438,836.07    -6,610,159,858.45    -3,429,278,977.61   -11,409,544,697.64
+Write-Host '                         TOTAL           PREPAYMENT              REGULAR             PREVIOUS'
+'UMBS    : {0,20} {1,20:N} {2,20:N} {3,20:N}' -f ($umbs_change   ).ToString('N'), (calc-pre $umbs_change_),    (calc-reg $umbs_change_),    $umbs_change_
+'GOLD    : {0,20} {1,20:N} {2,20:N} {3,20:N}' -f ($gld_change    ).ToString('N'), (calc-pre $gld_change_),     (calc-reg $gld_change_),     $gld_change_
+'GNMA I  : {0,20} {1,20:N} {2,20:N} {3,20:N}' -f ($gnma_i_change ).ToString('N'), (calc-pre $gnma_i_change_),  (calc-reg $gnma_i_change_),  $gnma_i_change_
+'GNMA II : {0,20} {1,20:N} {2,20:N} {3,20:N}' -f ($gnma_ii_change).ToString('N'), (calc-pre $gnma_ii_change_), (calc-reg $gnma_ii_change_), $gnma_ii_change_
+'TOTAL   : {0,20}' -f ($umbs_change + $gnma_i_change + $gld_change + $gnma_ii_change).ToString('N')
+
+
+# function table-row ($name, $val)
+# {
+#     [PSCustomObject]@{
+#         type = $name
+#         total = (calc-new $val).ToString('N')
+#         pre   = (calc-pre $val).ToString('N')
+#         reg   = (calc-reg $val).ToString('N')
+#     }
+# }
+
+# @(
+# table-row 'UMBS'          $umbs_change_
+# table-row 'GNMA I + GOLD' ($gnma_i_change_ + $gld_change_)
+# table-row 'GNMA II'       $gnma_ii_change_
+# ) | Format-Table
+
+
 
 Write-Host
 # ----------------------------------------------------------------------

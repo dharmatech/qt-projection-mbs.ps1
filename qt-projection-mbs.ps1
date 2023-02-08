@@ -129,35 +129,10 @@ function calc-pre ($val)
     ($val - $reg) * $rate
 }
 
-
 # ----------------------------------------------------------------------
 
 Write-Host ('rate: {0:N}' -f $rate) -ForegroundColor Yellow
 Write-Host
-
-# 'UMBS          : {0,20}' -f ($umbs_change                                                 ).ToString('N') 
-# 'GNMA I + GOLD : {0,20}' -f ($gnma_i_change + $gld_change                                 ).ToString('N') 
-# 'GNMA II       : {0,20}' -f ($gnma_ii_change                                              ).ToString('N')               
-# 'TOTAL         : {0,20}' -f ($umbs_change + $gnma_i_change + $gld_change + $gnma_ii_change).ToString('N')
-
-          # UMBS          :   -10,039,438,836.07    -7,980,265,720.03    -3,429,278,977.61
-# Write-Host '                               TOTAL           PREPAYMENT              REGULAR'
-# 'UMBS          : {0,20} {1,20:N} {2,20:N}' -f ($umbs_change                                                 ).ToString('N'), (calc-pre $umbs_change_),                    (calc-reg $umbs_change_)
-# 'GNMA I + GOLD : {0,20} {1,20:N} {2,20:N}' -f ($gnma_i_change + $gld_change                                 ).ToString('N'), (calc-pre ($gnma_i_change_ + $gld_change_)), (calc-reg ($gnma_i_change_ + $gld_change_))
-# 'GNMA II       : {0,20} {1,20:N} {2,20:N}' -f ($gnma_ii_change                                              ).ToString('N'), (calc-pre $gnma_ii_change_),                 (calc-reg $gnma_ii_change_)
-# 'TOTAL         : {0,20}' -f ($umbs_change + $gnma_i_change + $gld_change + $gnma_ii_change).ToString('N')
-
-
-
-#           UMBS    :   -10,039,438,836.07    -6,610,159,858.45    -3,429,278,977.61
-Write-Host '                         TOTAL           PREPAYMENT              REGULAR'
-'UMBS    : {0,20} {1,20:N} {2,20:N}' -f ($umbs_change   ).ToString('N'), (calc-pre $umbs_change_),    (calc-reg $umbs_change_)
-'GOLD    : {0,20} {1,20:N} {2,20:N}' -f ($gld_change    ).ToString('N'), (calc-pre $gld_change_),     (calc-reg $gld_change_)
-'GNMA I  : {0,20} {1,20:N} {2,20:N}' -f ($gnma_i_change ).ToString('N'), (calc-pre $gnma_i_change_),  (calc-reg $gnma_i_change_)
-'GNMA II : {0,20} {1,20:N} {2,20:N}' -f ($gnma_ii_change).ToString('N'), (calc-pre $gnma_ii_change_), (calc-reg $gnma_ii_change_)
-'TOTAL   : {0,20}' -f ($umbs_change + $gnma_i_change + $gld_change + $gnma_ii_change).ToString('N')
-
-
 
 #           UMBS    :   -10,039,438,836.07    -6,610,159,858.45    -3,429,278,977.61   -11,409,544,697.64
 Write-Host '                         TOTAL           PREPAYMENT              REGULAR             PREVIOUS'

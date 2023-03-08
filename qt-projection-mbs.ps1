@@ -24,17 +24,38 @@
 #     '2023-02-01'
 # )
 
-$rate = 2.75 / 3.32 # Jan / Dec    8.82
+# $rate = 2.75 / 3.32 # Jan / Dec    0.882
 
-$month = '2023-02-'
+# $month = '2023-02-'
+
+# $dates = @(
+#     '2023-02-01'
+#     '2023-02-08'
+#     '2023-02-15'
+#     '2023-02-22'
+#     '2023-03-01'
+# )
+
+# $rate = 0.83     # Not yet known Feb/Jan
+# $rate = 0.85     # Not yet known Feb/Jan
+# $rate = 0.94     # Not yet known Feb/Jan
+
+$2023_01 = 2.75
+$2023_02 = 3.25
+
+$rate = $2023_02 / $2023_01 # 1.18
+
+$month = '2023-03-'
 
 $dates = @(
-    '2023-02-01'
-    '2023-02-08'
-    '2023-02-15'
-    '2023-02-22'
     '2023-03-01'
+    '2023-03-08'
+    '2023-03-15'
+    '2023-03-22'
+    '2023-03-29'
+    '2023-04-05'
 )
+
 
 # ----------------------------------------------------------------------
 
@@ -96,10 +117,21 @@ function get-change ($text, $a, $b)
 # ----------------------------------------------------------------------
 # Jan dates for Feb report
 
-$gnma_i_change_  = (get-change 'GNMA I '  '2023-01-04' '2023-02-01')
-$gld_change_     = (get-change 'FHLMCGLD' '2023-01-04' '2023-02-01')
-$gnma_ii_change_ = (get-change 'GNMA II'  '2023-01-04' '2023-02-01')
-$umbs_change_    = (get-change 'UMBS'     '2023-01-04' '2023-02-01')
+# $gnma_i_change_  = (get-change 'GNMA I '  '2023-01-04' '2023-02-01')
+# $gld_change_     = (get-change 'FHLMCGLD' '2023-01-04' '2023-02-01')
+# $gnma_ii_change_ = (get-change 'GNMA II'  '2023-01-04' '2023-02-01')
+# $umbs_change_    = (get-change 'UMBS'     '2023-01-04' '2023-02-01')
+# ----------------------------------------------------------------------
+# Feb dates for Mar report
+
+$start = '2023-02-01'
+$end   = '2023-03-01'
+
+$gnma_i_change_  = (get-change 'GNMA I '  $start $end)
+$gld_change_     = (get-change 'FHLMCGLD' $start $end)
+$gnma_ii_change_ = (get-change 'GNMA II'  $start $end)
+$umbs_change_    = (get-change 'UMBS'     $start $end)
+
 
 $total = $umbs_change_ + $gnma_i_change_ + $gld_change_ + $gnma_ii_change_
 

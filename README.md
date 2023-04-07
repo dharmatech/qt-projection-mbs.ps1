@@ -9,3 +9,5 @@ Calculates the weekly QT runoff of -backed securities for the upcoming month.
 The implementation is based on the approach described in [John Comiskey's](https://twitter.com/Johncomiskey77) [reports](https://johncomiskey.substack.com/).
 
 John has answered many of my questions and provided much helpful insight during the development of the script.
+
+He also submitted a patch that implements his latest methodology which was used for the 2023 Feb report.

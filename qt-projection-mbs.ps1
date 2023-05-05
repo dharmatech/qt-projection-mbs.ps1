@@ -70,7 +70,8 @@ $2023_02 = 3.25
 # )
 
 # $rate = 0.83     # Not yet known
-$rate = 1.18     # Not yet known
+# $rate = 1.18     # Not yet known
+$rate = 0.935
 
 $month = '2023-05-'
 
@@ -200,7 +201,7 @@ function calc-pre ($val)
 
 # ----------------------------------------------------------------------
 
-Write-Host ('rate: {0:N}' -f $rate) -ForegroundColor Yellow
+Write-Host ('rate: {0:N3}' -f $rate) -ForegroundColor Yellow
 Write-Host
 
 #           UMBS    :   -10,039,438,836.07    -6,610,159,858.45    -3,429,278,977.61   -11,409,544,697.64

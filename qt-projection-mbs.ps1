@@ -58,7 +58,7 @@ function get-change ($text, $a, $b)
 $gnma_i_change_  = (get-change 'GNMA I '  '2023-04-05' '2023-05-03')
 $gld_change_     = (get-change 'FHLMCGLD' '2023-04-05' '2023-04-19')
 $gnma_ii_change_ = (get-change 'GNMA II'  '2023-04-05' '2023-05-03')
-$cusip_change_    = (get-change 'UMBS'     '2023-04-05' '2023-04-19')
+$cusip_change_   = (get-change 'UMBS'     '2023-04-05' '2023-04-19')
 $umbs_change_    = (get-change 'UMBS'     '2023-04-19' '2023-04-26')
 
 $total = $umbs_change_ + $gnma_i_change_ + $gld_change_ + $gnma_ii_change_
@@ -72,10 +72,10 @@ function calc-new ($val)
     $reg + $rate * $pre
 }
 
-$gnma_i_change  = calc-new $gnma_i_change_
-$gld_change     = calc-new ($gld_change_ + $cusip_change_)
-$gnma_ii_change = calc-new $gnma_ii_change_
-$umbs_change    = calc-new ($umbs_change_ - $cusip_change_)
+$gnma_i_change  = calc-new  $gnma_i_change_
+$gld_change     = calc-new ($gld_change_     + $cusip_change_)
+$gnma_ii_change = calc-new  $gnma_ii_change_
+$umbs_change    = calc-new ($umbs_change_    - $cusip_change_)
 
 function calc-reg ($val)
 {

@@ -91,7 +91,7 @@ function calc-pre ($val)
 
 # ----------------------------------------------------------------------
 
-Write-Host ('rate: {0:N}' -f $rate) -ForegroundColor Yellow
+Write-Host ('rate: {0:N3}' -f $rate) -ForegroundColor Yellow
 Write-Host
 
 #           UMBS    :   -10,039,438,836.07    -6,610,159,858.45    -3,429,278,977.61   -11,409,544,697.64

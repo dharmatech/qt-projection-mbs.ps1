@@ -42,13 +42,13 @@ function get-sum ($text, $date)
     # $result.soma.holdings | Where-Object securityDescription -match $text | ft * | Out-String | Write-Host
 
     # $result.soma.holdings | Where-Object securityDescription -match $text | Format-Table * > ('{0}-{1}-records.txt' -f $date, $text)
-       
+        
     ($result.soma.holdings | Where-Object securityDescription -match $text | Measure-Object -Property currentFaceValue -Sum).Sum    
 }
 
 function get-change ($text, $a, $b)
 {        
-    $sum_a = get-sum $text $a        
+    $sum_a = get-sum $text $a         
     $sum_b = get-sum $text $b
        
     $sum_b - $sum_a
@@ -56,10 +56,10 @@ function get-change ($text, $a, $b)
 
 
 $gnma_i_change_  = (get-change 'GNMA I '  '2023-04-05' '2023-05-03')
-$gld_change_     = (get-change 'FHLMCGLD' '2023-04-05' '2023-04-19')
+$gld_change_     = (get-change 'FHLMCGLD' '2023-04-05' '2023-05-03')
 $gnma_ii_change_ = (get-change 'GNMA II'  '2023-04-05' '2023-05-03')
 $cusip_change_   = (get-change 'UMBS'     '2023-04-05' '2023-04-19')
-$umbs_change_    = (get-change 'UMBS'     '2023-04-19' '2023-04-26')
+$umbs_change_    = (get-change 'UMBS'     '2023-04-05' '2023-05-03')
 
 $total = $umbs_change_ + $gnma_i_change_ + $gld_change_ + $gnma_ii_change_
 
@@ -72,10 +72,10 @@ function calc-new ($val)
     $reg + $rate * $pre
 }
 
-$gnma_i_change  = calc-new  $gnma_i_change_
-$gld_change     = calc-new ($gld_change_     + $cusip_change_)
-$gnma_ii_change = calc-new  $gnma_ii_change_
-$umbs_change    = calc-new ($umbs_change_    - $cusip_change_)
+$gnma_i_change  = calc-new $gnma_i_change_
+$gld_change     = calc-new ($gld_change_ + $cusip_change_)
+$gnma_ii_change = calc-new $gnma_ii_change_
+$umbs_change    = calc-new ($umbs_change_ - $cusip_change_)
 
 function calc-reg ($val)
 {
@@ -96,10 +96,11 @@ Write-Host
 
 #           UMBS    :   -10,039,438,836.07    -6,610,159,858.45    -3,429,278,977.61   -11,409,544,697.64
 Write-Host '                         TOTAL           PREPAYMENT              REGULAR             PREVIOUS'
-'UMBS    : {0,20} {1,20:N} {2,20:N} {3,20:N}' -f ($umbs_change   ).ToString('N'), (calc-pre $umbs_change_),    (calc-reg $umbs_change_),    ($umbs_change_ - $cusip_change_)
-'GOLD    : {0,20} {1,20:N} {2,20:N} {3,20:N}' -f ($gld_change    ).ToString('N'), (calc-pre $gld_change_),     (calc-reg $gld_change_),     ($gld_change_ + $cusip_change_)
+'CUSIP   : {0,20} {1,20:N} {2,20:N} {3,20:N}' -f ($gnma_i_change ).ToString('N'), (calc-pre $gnma_i_change_),  (calc-reg $gnma_i_change_),  $cusip_change_
 'GNMA I  : {0,20} {1,20:N} {2,20:N} {3,20:N}' -f ($gnma_i_change ).ToString('N'), (calc-pre $gnma_i_change_),  (calc-reg $gnma_i_change_),  $gnma_i_change_
+'GOLD    : {0,20} {1,20:N} {2,20:N} {3,20:N}' -f ($gld_change    ).ToString('N'), (calc-pre $gld_change_),     (calc-reg $gld_change_),     ($gld_change_ + $cusip_change_)
 'GNMA II : {0,20} {1,20:N} {2,20:N} {3,20:N}' -f ($gnma_ii_change).ToString('N'), (calc-pre $gnma_ii_change_), (calc-reg $gnma_ii_change_), $gnma_ii_change_
+'UMBS    : {0,20} {1,20:N} {2,20:N} {3,20:N}' -f ($umbs_change   ).ToString('N'), (calc-pre $umbs_change_),    (calc-reg $umbs_change_),    ($umbs_change_ - $cusip_change_)
 'TOTAL   : {0,20}' -f ($umbs_change + $gnma_i_change + $gld_change + $gnma_ii_change).ToString('N')
 
 
@@ -131,12 +132,12 @@ $types = @(
 
 function loop ($dates)
 {
-    if ($dates.Count -ge 2)
+    if ($dates.Count -ge 2) 
     {
         # $items = $types.Where({ ($_.date -ge $dates[0]) -and ($_.date -le $dates[1]) })
 
         $items = $types.Where({ ($_.date -gt $dates[0]) -and ($_.date -le $dates[1]) })
-               
+                
         $sum = ($items | Measure-Object -Property value -Sum).Sum
 
         $str = if ($sum -eq $null) { '' } else { $sum.ToString('N') }

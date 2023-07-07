@@ -82,17 +82,30 @@ $2023_02 = 3.25
 # )
 
 # $rate = 0.83     # Not yet known
+# $rate = 1.18     # Not yet known
+
+# $month = '2023-06-'
+
+# $dates = @(
+#     '2023-05-31'
+#     '2023-06-07'
+#     '2023-06-14'
+#     '2023-06-21'
+#     '2023-06-28'
+#     '2023-07-05'
+# )
+
+# $rate = 0.83     # Not yet known
 $rate = 1.18     # Not yet known
 
-$month = '2023-06-'
+$month = '2023-07-'
 
 $dates = @(
-    '2023-05-31'
-    '2023-06-07'
-    '2023-06-14'
-    '2023-06-21'
-    '2023-06-28'
     '2023-07-05'
+    '2023-07-12'
+    '2023-07-19'
+    '2023-07-26'
+    '2023-08-02'
 )
 
 # ----------------------------------------------------------------------
@@ -138,20 +151,56 @@ function get-change ($text, $a, $b)
        
     $sum_b - $sum_a
 }
+# ----------------------------------------------------------------------
+# April dates for May
 
+# $dates = @(
+#     '2023-04-05'
+#     '2023-04-12'
+#     '2023-04-19'
+#     '2023-04-26'
+#     '2023-05-03'
+# )
 
 # $gnma_i_change_  = (get-change 'GNMA I '  '2023-04-05' '2023-05-03')
 # $gld_change_     = (get-change 'FHLMCGLD' '2023-04-05' '2023-05-03')
 # $gnma_ii_change_ = (get-change 'GNMA II'  '2023-04-05' '2023-05-03')
-# $cusip_change_   = (get-change 'UMBS'     '2023-04-05' '2023-04-19')
+# $cusip_change_   = (get-change 'UMBS'     '2023-04-05' '2023-04-19') # 3rd from last Wed
 # $umbs_change_    = (get-change 'UMBS'     '2023-04-05' '2023-05-03')
+# ----------------------------------------------------------------------
+# May dates for June
 
-$gnma_i_change_  = (get-change 'GNMA I '  '2023-05-03' '2023-05-31')
-$gld_change_     = (get-change 'FHLMCGLD' '2023-05-03' '2023-05-31')
-$gnma_ii_change_ = (get-change 'GNMA II'  '2023-05-03' '2023-05-31')
-# $cusip_change_   = (get-change 'UMBS'     '2023-05-03' '2023-05-31')
-$cusip_change_   = (get-change 'UMBS'     '2023-05-03' '2023-05-24')
-$umbs_change_    = (get-change 'UMBS'     '2023-05-03' '2023-05-31')
+# $dates = @(
+#     '2023-05-03'
+#     '2023-05-10'
+#     '2023-05-17'
+#     '2023-05-24'
+#     '2023-05-31'
+# )
+
+# $gnma_i_change_  = (get-change 'GNMA I '  '2023-05-03' '2023-05-31')
+# $gld_change_     = (get-change 'FHLMCGLD' '2023-05-03' '2023-05-31')
+# $gnma_ii_change_ = (get-change 'GNMA II'  '2023-05-03' '2023-05-31')
+# $cusip_change_   = (get-change 'UMBS'     '2023-05-03' '2023-05-24') # 3rd from last Wed
+# $umbs_change_    = (get-change 'UMBS'     '2023-05-03' '2023-05-31')
+# ----------------------------------------------------------------------
+# June dates for July
+
+# $dates = @(
+#     '2023-05-31'
+#     '2023-06-07'
+#     '2023-06-14'
+#     '2023-06-21'
+#     '2023-06-28'
+#     '2023-07-05'
+# )
+
+$gnma_i_change_  = (get-change 'GNMA I '  '2023-05-31' '2023-07-05')
+$gld_change_     = (get-change 'FHLMCGLD' '2023-05-31' '2023-07-05')
+$gnma_ii_change_ = (get-change 'GNMA II'  '2023-05-31' '2023-07-05')
+$cusip_change_   = (get-change 'UMBS'     '2023-05-31' '2023-06-21') # 3rd from last Wed
+$umbs_change_    = (get-change 'UMBS'     '2023-05-31' '2023-07-05')
+# ----------------------------------------------------------------------
 
 $total = $umbs_change_ + $gnma_i_change_ + $gld_change_ + $gnma_ii_change_
 

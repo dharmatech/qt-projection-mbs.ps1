@@ -1,4 +1,9 @@
 ﻿
+# ----------------------------------------------------------------------
+# 2023-08-06 Update from John Comiskey
+# Removed CUSIP and GLD.
+# ----------------------------------------------------------------------
+
 # $rate = 0.83
 
 # $month = '2022-12-'
@@ -40,8 +45,8 @@
 # $rate = 0.85     # Not yet known Feb/Jan
 # $rate = 0.94     # Not yet known Feb/Jan
 
-$2023_01 = 2.75
-$2023_02 = 3.25
+# $2023_01 = 2.75
+# $2023_02 = 3.25
 
 # $rate = $2023_02 / $2023_01 # 1.18
 
@@ -94,20 +99,33 @@ $2023_02 = 3.25
 #     '2023-06-28'
 #     '2023-07-05'
 # )
-
+# ----------------------------------------------------------------------
 # $rate = 0.83     # Not yet known
-$rate = 1.18     # Not yet known
+# $rate = 1.04     # Not yet known
 
-$month = '2023-07-'
+# $month = '2023-07-'
+
+# $dates = @(
+#     '2023-07-05'
+#     '2023-07-12'
+#     '2023-07-19'
+#     '2023-07-26'
+#     '2023-08-02'
+# )
+# ----------------------------------------------------------------------
+# $rate = 0.83     # Not yet known
+$rate = 1.04     # Not yet known
+
+$month = '2023-08-'
 
 $dates = @(
-    '2023-07-05'
-    '2023-07-12'
-    '2023-07-19'
-    '2023-07-26'
     '2023-08-02'
+    '2023-08-09'
+    '2023-08-16'
+    '2023-08-23'
+    '2023-08-30'
+    '2023-09-06'
 )
-
 # ----------------------------------------------------------------------
 
 function soma-mbs-get-asof ($date)
@@ -195,14 +213,25 @@ function get-change ($text, $a, $b)
 #     '2023-07-05'
 # )
 
-$gnma_i_change_  = (get-change 'GNMA I '  '2023-05-31' '2023-07-05')
-$gld_change_     = (get-change 'FHLMCGLD' '2023-05-31' '2023-07-05')
-$gnma_ii_change_ = (get-change 'GNMA II'  '2023-05-31' '2023-07-05')
-$cusip_change_   = (get-change 'UMBS'     '2023-05-31' '2023-06-21') # 3rd from last Wed
-$umbs_change_    = (get-change 'UMBS'     '2023-05-31' '2023-07-05')
+# $gnma_i_change_  = (get-change 'GNMA I '  '2023-05-31' '2023-07-05')
+# $gnma_ii_change_ = (get-change 'GNMA II'  '2023-05-31' '2023-07-05')
+# $umbs_change_    = (get-change 'UMBS'     '2023-05-31' '2023-07-05')
 # ----------------------------------------------------------------------
+# July dates for Aug
 
-$total = $umbs_change_ + $gnma_i_change_ + $gld_change_ + $gnma_ii_change_
+# $dates = @(
+#     '2023-07-05'
+#     '2023-07-12'
+#     '2023-07-19'
+#     '2023-07-26'
+#     '2023-08-02'
+# )
+
+$gnma_i_change_  = (get-change 'GNMA I '  '2023-07-05' '2023-08-02')
+$gnma_ii_change_ = (get-change 'GNMA II'  '2023-07-05' '2023-08-02')
+$umbs_change_    = (get-change 'UMBS'     '2023-07-05' '2023-08-02')
+# ----------------------------------------------------------------------
+$total = $umbs_change_ + $gnma_i_change_ + $gnma_ii_change_
 
 function calc-new ($val)
 {
@@ -214,9 +243,8 @@ function calc-new ($val)
 }
 
 $gnma_i_change  = calc-new $gnma_i_change_
-$gld_change     = calc-new ($gld_change_ + $cusip_change_)
 $gnma_ii_change = calc-new $gnma_ii_change_
-$umbs_change    = calc-new ($umbs_change_ - $cusip_change_)
+$umbs_change    = calc-new $umbs_change_
 
 function calc-reg ($val)
 {
@@ -237,12 +265,10 @@ Write-Host
 
 #           UMBS    :   -10,039,438,836.07    -6,610,159,858.45    -3,429,278,977.61   -11,409,544,697.64
 Write-Host '                         TOTAL           PREPAYMENT              REGULAR             PREVIOUS'
-'CUSIP   : {0,20} {1,20:N} {2,20:N} {3,20:N}' -f ($gnma_i_change ).ToString('N'), (calc-pre $gnma_i_change_),  (calc-reg $gnma_i_change_),  $cusip_change_
 'GNMA I  : {0,20} {1,20:N} {2,20:N} {3,20:N}' -f ($gnma_i_change ).ToString('N'), (calc-pre $gnma_i_change_),  (calc-reg $gnma_i_change_),  $gnma_i_change_
-'GOLD    : {0,20} {1,20:N} {2,20:N} {3,20:N}' -f ($gld_change    ).ToString('N'), (calc-pre $gld_change_),     (calc-reg $gld_change_),     ($gld_change_ + $cusip_change_)
 'GNMA II : {0,20} {1,20:N} {2,20:N} {3,20:N}' -f ($gnma_ii_change).ToString('N'), (calc-pre $gnma_ii_change_), (calc-reg $gnma_ii_change_), $gnma_ii_change_
-'UMBS    : {0,20} {1,20:N} {2,20:N} {3,20:N}' -f ($umbs_change   ).ToString('N'), (calc-pre $umbs_change_),    (calc-reg $umbs_change_),    ($umbs_change_ - $cusip_change_)
-'TOTAL   : {0,20}' -f ($umbs_change + $gnma_i_change + $gld_change + $gnma_ii_change).ToString('N')
+'UMBS    : {0,20} {1,20:N} {2,20:N} {3,20:N}' -f ($umbs_change   ).ToString('N'), (calc-pre $umbs_change_),    (calc-reg $umbs_change_),    $umbs_change_
+'TOTAL   : {0,20}' -f ($umbs_change + $gnma_i_change + $gnma_ii_change).ToString('N')
 
 
 # function table-row ($name, $val)
@@ -266,7 +292,7 @@ Write-Host '                         TOTAL           PREPAYMENT              REG
 Write-Host
 # ----------------------------------------------------------------------
 $types = @(
-    [pscustomobject]@{ date = $month + '15'; type = 'GNMA I + GOLD' ; value = $gnma_i_change + $gld_change }
+    [pscustomobject]@{ date = $month + '15'; type = 'GNMA I' ; value = $gnma_i_change}
     [pscustomobject]@{ date = $month + '20'; type = 'GNMA II'       ; value = $gnma_ii_change              }
     [pscustomobject]@{ date = $month + '25'; type = 'UMBS'          ; value = $umbs_change                 }
 )

@@ -292,9 +292,9 @@ Write-Host '                         TOTAL           PREPAYMENT              REG
 Write-Host
 # ----------------------------------------------------------------------
 $types = @(
-    [pscustomobject]@{ date = $month + '15'; type = 'GNMA I' ; value = $gnma_i_change}
-    [pscustomobject]@{ date = $month + '20'; type = 'GNMA II'       ; value = $gnma_ii_change              }
-    [pscustomobject]@{ date = $month + '25'; type = 'UMBS'          ; value = $umbs_change                 }
+    [pscustomobject]@{ date = $month + '15'; type = 'GNMA I' ; value = $gnma_i_change  }
+    [pscustomobject]@{ date = $month + '20'; type = 'GNMA II'; value = $gnma_ii_change }
+    [pscustomobject]@{ date = $month + '25'; type = 'UMBS'   ; value = $umbs_change    }
 )
 
 function loop ($dates)
